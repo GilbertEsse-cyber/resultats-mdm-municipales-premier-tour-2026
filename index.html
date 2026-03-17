@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mont-de-Marsan — Municipales 2026 — 1er tour</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --leregle:     #888888;
+    --dayot:       #1a3e72;
+    --darrieussecq:#e07020;
+    --legodou:     #7c3fa0;
+    --dutin:       #d4477a;
+    --bg:          #f5f4f0;
+    --surface:     #ffffff;
+    --border:      rgba(0,0,0,0.09);
+    --text:        #1a1a1a;
+    --muted:       #666;
+    --radius:      12px;
+  }
+
+  body {
+    font-family: 'Figtree', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 28px 20px 60px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  header span {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+  .legend-sq { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+  /* Metric cards */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .metric-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .metric-val { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .metric-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .metric.accent-dutin { border-left: 4px solid var(--dutin); }
+  .metric.accent-dayot  { border-left: 4px solid var(--dayot); }
+  .metric.accent-darr   { border-left: 4px solid var(--darrieussecq); }
+
+  /* Cards layout */
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .row-1 { margin-bottom: 16px; }
+  @media (max-width: 700px) { .row-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+  }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap; }
+  .tab {
+    padding: 5px 13px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all .15s;
+    font-family: 'Figtree', sans-serif;
+  }
+  .tab:hover { background: var(--bg); }
+  .tab.active { color: #fff; border-color: transparent; }
+  .tab.active.t-leregle     { background: var(--leregle); }
+  .tab.active.t-dayot        { background: var(--dayot); }
+  .tab.active.t-darrieussecq { background: var(--darrieussecq); }
+  .tab.active.t-legodou      { background: var(--legodou); }
+  .tab.active.t-dutin        { background: var(--dutin); }
+  .tab.active.t-winner       { background: #333; }
+  .tab.active.t-participation { background: #4a6fa5; }
+  .tab.active.t-ecart        { background: #2d6e4e; }
+
+  /* BV grid map */
+  #bv-map { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+  .bv-cell {
+    border-radius: 8px;
+    padding: 7px 4px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+    min-height: 68px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.35;
+    cursor: default;
+    transition: transform .1s;
+  }
+  .bv-cell:hover { transform: scale(1.04); z-index: 1; position: relative; }
+  .bv-cell .bv-num { font-size: 9px; opacity: .7; }
+  .bv-cell .bv-name { font-size: 9px; margin-bottom: 2px; opacity: .85; }
+  .bv-cell .bv-cand { font-size: 11px; font-weight: 700; }
+  .bv-cell .bv-pct  { font-size: 12px; font-weight: 700; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 8px; border-bottom: 1.5px solid var(--border); text-align: right; white-space: nowrap; }
+  th:first-child { text-align: left; }
+  td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
+  td:first-child { text-align: left; font-weight: 500; }
+  tr:last-child td { font-weight: 700; background: var(--bg); }
+  tr:hover td { background: rgba(0,0,0,0.025); }
+  .cell-dutin { color: var(--dutin); font-weight: 700; }
+  .cell-dayot { color: var(--dayot); font-weight: 700; }
+  .cell-darr  { color: var(--darrieussecq); font-weight: 700; }
+  .cell-leg   { color: var(--legodou); font-weight: 700; }
+  .cell-ler   { color: var(--leregle); font-weight: 700; }
+  .td-1st { background: rgba(212,71,122,0.08) !important; }
+  .td-win  { font-weight: 700 !important; }
+
+  footer { font-size: 11px; color: var(--muted); text-align: center; margin-top: 32px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Mont-de-Marsan · Municipales 2026 · 1<sup>er</sup> tour</h1>
+  <span>15 mars 2026 · 23 bureaux de vote actifs</span>
+</header>
+
+<div class="legend">
+  <span class="legend-item"><span class="legend-sq" style="background:var(--leregle)"></span>Lerègle (RN)</span>
+  <span class="legend-item"><span class="legend-sq" style="background:var(--dayot)"></span>Dayot</span>
+  <span class="legend-item"><span class="legend-sq" style="background:var(--darrieussecq)"></span>Darrieussecq</span>
+  <span class="legend-item"><span class="legend-sq" style="background:var(--legodou)"></span>Legodou (Marsan Citoyen)</span>
+  <span class="legend-item"><span class="legend-sq" style="background:var(--dutin)"></span>Dutin (Union de la Gauche)</span>
+</div>
+
+<div class="metrics" id="metrics"></div>
+
+<div class="row-2">
+  <!-- Camembert -->
+  <div class="card">
+    <div class="card-title">Résultats globaux — % des exprimés</div>
+    <div style="position:relative;width:100%;height:260px"><canvas id="pieChart"></canvas></div>
+  </div>
+  <!-- Camembert participation -->
+  <div class="card">
+    <div class="card-title">Participation & abstention</div>
+    <div style="position:relative;width:100%;height:260px"><canvas id="pie2Chart"></canvas></div>
+  </div>
+</div>
+
+<!-- Histogramme empilé par BV -->
+<div class="card row-1">
+  <div class="card-title">Voix par bureau de vote — résultats empilés</div>
+  <div style="position:relative;width:100%;height:320px"><canvas id="stackedBar"></canvas></div>
+</div>
+
+<!-- Histogramme % par BV avec étiquettes -->
+<div class="card row-1">
+  <div class="card-title">Score (%) par bureau de vote</div>
+  <div class="tabs" id="tabs-bv">
+    <button class="tab active t-dutin"        onclick="switchBV('dutin',this)">Dutin</button>
+    <button class="tab t-dayot"               onclick="switchBV('dayot',this)">Dayot</button>
+    <button class="tab t-darrieussecq"        onclick="switchBV('darrieussecq',this)">Darrieussecq</button>
+    <button class="tab t-leregle"             onclick="switchBV('leregle',this)">Lerègle</button>
+    <button class="tab t-legodou"             onclick="switchBV('legodou',this)">Legodou</button>
+  </div>
+  <div style="position:relative;width:100%;height:300px"><canvas id="singleBar"></canvas></div>
+</div>
+
+<!-- Écart Dutin–Dayot -->
+<div class="card row-1">
+  <div class="card-title">Écart Dutin − Dayot par bureau (voix)</div>
+  <div style="position:relative;width:100%;height:300px"><canvas id="ecartChart"></canvas></div>
+</div>
+
+<!-- Carte des bureaux -->
+<div class="card row-1">
+  <div class="card-title">Carte des bureaux — vue par liste</div>
+  <div class="tabs" id="tabs-map">
+    <button class="tab active t-winner"       onclick="showView('winner',this)">1er par bureau</button>
+    <button class="tab t-dutin"               onclick="showView('dutin',this)">Dutin</button>
+    <button class="tab t-dayot"               onclick="showView('dayot',this)">Dayot</button>
+    <button class="tab t-darrieussecq"        onclick="showView('darrieussecq',this)">Darrieussecq</button>
+    <button class="tab t-participation"       onclick="showView('participation',this)">Participation</button>
+  </div>
+  <div id="bv-map"></div>
+</div>
+
+<!-- Tableau détaillé -->
+<div class="card row-1">
+  <div class="card-title">Tableau détaillé par bureau</div>
+  <div class="table-wrap">
+    <table id="detail-table"></table>
+  </div>
+</div>
+
+<footer>Source : Ministère de l'Intérieur / CD40 · Traitement JB Savary · Mars 2026</footer>
+
+<script>
+Chart.register(ChartDataLabels);
+
+const COLORS = {
+  leregle:      '#888888',
+  dayot:        '#1a3e72',
+  darrieussecq: '#e07020',
+  legodou:      '#7c3fa0',
+  dutin:        '#d4477a'
+};
+const NAMES = {
+  leregle:'Lerègle', dayot:'Dayot', darrieussecq:'Darrieussecq', legodou:'Legodou', dutin:'Dutin'
+};
+const KEYS = ['leregle','legodou','darrieussecq','dutin','dayot'];
+
+const bvs = [
+  {bv:1,  nom:'Arènes I',           inscrits:881,  votants:548, exprimes:540, leregle:65,  legodou:27, darrieussecq:159, dutin:163, dayot:113},
+  {bv:2,  nom:'Pouy I',             inscrits:1030, votants:525, exprimes:511, leregle:68,  legodou:41, darrieussecq:115, dutin:172, dayot:115},
+  {bv:3,  nom:'Pouy II',            inscrits:827,  votants:539, exprimes:524, leregle:57,  legodou:32, darrieussecq:129, dutin:149, dayot:157},
+  {bv:4,  nom:'Pouy III',           inscrits:880,  votants:532, exprimes:524, leregle:74,  legodou:31, darrieussecq:130, dutin:170, dayot:119},
+  {bv:5,  nom:'Jean Moulin I',      inscrits:853,  votants:553, exprimes:536, leregle:63,  legodou:39, darrieussecq:105, dutin:183, dayot:145},
+  {bv:6,  nom:'Jean Moulin II',     inscrits:875,  votants:576, exprimes:564, leregle:76,  legodou:40, darrieussecq:123, dutin:190, dayot:135},
+  {bv:7,  nom:'Jean Moulin III',    inscrits:877,  votants:524, exprimes:510, leregle:75,  legodou:29, darrieussecq:118, dutin:171, dayot:117},
+  {bv:8,  nom:'Jean Moulin IV',     inscrits:964,  votants:656, exprimes:633, leregle:79,  legodou:42, darrieussecq:161, dutin:194, dayot:157},
+  {bv:9,  nom:'Jean Moulin V',      inscrits:916,  votants:601, exprimes:593, leregle:89,  legodou:24, darrieussecq:158, dutin:153, dayot:169},
+  {bv:10, nom:'Police Municipale',  inscrits:799,  votants:456, exprimes:441, leregle:49,  legodou:28, darrieussecq:115, dutin:132, dayot:117},
+  {bv:11, nom:'Lamarque Cando',     inscrits:1060, votants:564, exprimes:558, leregle:74,  legodou:50, darrieussecq:161, dutin:138, dayot:135},
+  {bv:12, nom:'Saint-Médard I',     inscrits:793,  votants:525, exprimes:514, leregle:98,  legodou:34, darrieussecq:113, dutin:145, dayot:124},
+  {bv:13, nom:'Saint-Médard II',    inscrits:897,  votants:565, exprimes:546, leregle:75,  legodou:22, darrieussecq:133, dutin:149, dayot:167},
+  {bv:14, nom:'Péglé I',            inscrits:820,  votants:503, exprimes:499, leregle:59,  legodou:30, darrieussecq:111, dutin:140, dayot:152},
+  {bv:15, nom:'Péglé II',           inscrits:805,  votants:511, exprimes:500, leregle:41,  legodou:32, darrieussecq:131, dutin:133, dayot:163},
+  {bv:16, nom:'Péglé III',          inscrits:991,  votants:582, exprimes:564, leregle:70,  legodou:51, darrieussecq:137, dutin:158, dayot:148},
+  {bv:17, nom:'Péglé IV',           inscrits:858,  votants:498, exprimes:487, leregle:64,  legodou:47, darrieussecq:119, dutin:148, dayot:103},
+  {bv:18, nom:'Argenté I',          inscrits:1041, votants:404, exprimes:396, leregle:47,  legodou:14, darrieussecq:58,  dutin:136, dayot:133},
+  {bv:19, nom:'Argenté II',         inscrits:927,  votants:444, exprimes:432, leregle:82,  legodou:30, darrieussecq:88,  dutin:124, dayot:108},
+  {bv:20, nom:'Bourg Neuf I',       inscrits:1040, votants:609, exprimes:590, leregle:61,  legodou:45, darrieussecq:162, dutin:179, dayot:143},
+  {bv:21, nom:'Bourg Neuf II',      inscrits:895,  votants:499, exprimes:492, leregle:98,  legodou:25, darrieussecq:114, dutin:135, dayot:120},
+  {bv:22, nom:'Carboue I',          inscrits:827,  votants:458, exprimes:446, leregle:96,  legodou:26, darrieussecq:106, dutin:117, dayot:101},
+  {bv:23, nom:'Carboue II',         inscrits:891,  votants:527, exprimes:517, leregle:94,  legodou:15, darrieussecq:103, dutin:152, dayot:153},
+];
+
+// Note: j'utilise les voix du tableau image pour corriger quelques écarts
+// Totaux recalculés sur la base du tableau image (ligne total visible)
+const totIns  = bvs.reduce((s,b) => s + b.inscrits, 0);
+const totVot  = bvs.reduce((s,b) => s + b.votants,  0);
+const totExp  = bvs.reduce((s,b) => s + b.exprimes, 0);
+const totals  = {};
+KEYS.forEach(k => totals[k] = bvs.reduce((s,b) => s + b[k], 0));
+
+function pct(v, base) { return (100*v/base).toFixed(2); }
+function pct1(v, base) { return (100*v/base).toFixed(1); }
+function getWinner(b) {
+  let max = 0, w = '';
+  KEYS.forEach(k => { if(b[k] > max){ max=b[k]; w=k; }});
+  return w;
+}
+
+// ── Metrics ──────────────────────────────────────────────────────────────────
+const mdata = [
+  {label:'Inscrits',      val: totIns.toLocaleString('fr-FR'),   sub: '',                          cls:''},
+  {label:'Votants',       val: totVot.toLocaleString('fr-FR'),   sub: pct1(totVot,totIns)+'% de participation', cls:''},
+  {label:'Exprimés',      val: totExp.toLocaleString('fr-FR'),   sub: pct1(totExp,totVot)+'% des votants', cls:''},
+  {label:'Dutin — 1er',  val: totals.dutin.toLocaleString('fr-FR'), sub: pct(totals.dutin,totExp)+'% des exprimés', cls:'accent-dutin'},
+  {label:'Dayot — 2e',   val: totals.dayot.toLocaleString('fr-FR'), sub: pct(totals.dayot,totExp)+'% des exprimés', cls:'accent-dayot'},
+  {label:'Darrieussecq', val: totals.darrieussecq.toLocaleString('fr-FR'), sub: pct(totals.darrieussecq,totExp)+'% des exprimés', cls:'accent-darr'},
+  {label:'Écart D–D',    val: '+'+(totals.dutin-totals.dayot), sub: 'Dutin − Dayot en voix', cls:''},
+];
+const mg = document.getElementById('metrics');
+mdata.forEach(m => {
+  mg.innerHTML += `<div class="metric ${m.cls}">
+    <div class="metric-label">${m.label}</div>
+    <div class="metric-val">${m.val}</div>
+    <div class="metric-sub">${m.sub}</div>
+  </div>`;
+});
+
+const bvShort = bvs.map(b => b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Méd').replace('Police Municipale','Police').replace('Lamarque Cando','Lamarque').replace('Bourg Neuf','Bourg N.').replace('Carboue','Carboué'));
+
+// ── Camembert résultats ────────────────────────────────────────────────────
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Lerègle','Legodou','Darrieussecq','Dutin','Dayot'],
+    datasets:[{
+      data: [totals.leregle, totals.legodou, totals.darrieussecq, totals.dutin, totals.dayot],
+      backgroundColor: [COLORS.leregle, COLORS.legodou, COLORS.darrieussecq, COLORS.dutin, COLORS.dayot],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    cutout: '52%',
+    plugins: {
+      legend: { display:false },
+      datalabels: {
+        color: '#fff',
+        font: { weight:'700', size:13 },
+        formatter: (val, ctx) => {
+          const pctV = (100*val/totExp).toFixed(1);
+          return pctV + '%';
+        },
+        display: ctx => (100*ctx.dataset.data[ctx.dataIndex]/totExp) > 4
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.label} : ${ctx.raw.toLocaleString('fr-FR')} voix (${(100*ctx.raw/totExp).toFixed(2)}%)`
+        }
+      }
+    }
+  }
+});
+
+// ── Camembert participation ───────────────────────────────────────────────
+new Chart(document.getElementById('pie2Chart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Votants','Abstentions'],
+    datasets:[{
+      data: [totVot, totIns - totVot],
+      backgroundColor: ['#4a6fa5','#d0cfc9'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    cutout: '52%',
+    plugins: {
+      legend: { display:false },
+      datalabels: {
+        color: '#fff',
+        font: { weight:'700', size:14 },
+        formatter: (val, ctx) => {
+          const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+          return (100*val/total).toFixed(1)+'%';
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.label} : ${ctx.raw.toLocaleString('fr-FR')} (${(100*ctx.raw/totIns).toFixed(1)}%)`
+        }
+      }
+    }
+  }
+});
+
+// ── Histogramme empilé ────────────────────────────────────────────────────
+new Chart(document.getElementById('stackedBar'), {
+  type: 'bar',
+  data: {
+    labels: bvShort,
+    datasets: [
+      { label:'Lerègle',      data: bvs.map(b=>b.leregle),      backgroundColor: COLORS.leregle },
+      { label:'Legodou',      data: bvs.map(b=>b.legodou),      backgroundColor: COLORS.legodou },
+      { label:'Darrieussecq', data: bvs.map(b=>b.darrieussecq), backgroundColor: COLORS.darrieussecq },
+      { label:'Dutin',        data: bvs.map(b=>b.dutin),        backgroundColor: COLORS.dutin },
+      { label:'Dayot',        data: bvs.map(b=>b.dayot),        backgroundColor: COLORS.dayot },
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins: {
+      legend: { display:false },
+      datalabels: {
+        display: ctx => ctx.dataset.data[ctx.dataIndex] >= 80,
+        color: '#fff',
+        font: { weight:'700', size:10 },
+        formatter: v => v
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label} : ${ctx.raw} voix (${(100*ctx.raw/bvs[ctx.dataIndex].exprimes).toFixed(1)}%)`
+        }
+      }
+    },
+    scales: {
+      x: { stacked:true, ticks:{ font:{size:10}, autoSkip:false, maxRotation:50 } },
+      y: { stacked:true, ticks:{ font:{size:11} } }
+    }
+  }
+});
+
+// ── Single bar par candidat ───────────────────────────────────────────────
+let singleChart = null;
+function buildSingleBar(key) {
+  const data = bvs.map(b => parseFloat((100*b[key]/b.exprimes).toFixed(1)));
+  const cfg = {
+    type: 'bar',
+    data: {
+      labels: bvShort,
+      datasets:[{
+        data,
+        backgroundColor: COLORS[key],
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{ display:false },
+        datalabels: {
+          anchor:'end', align:'top',
+          color: COLORS[key],
+          font:{ weight:'700', size:11 },
+          formatter: v => v+'%'
+        },
+        tooltip:{
+          callbacks:{
+            label: ctx => ` ${NAMES[key]} : ${bvs[ctx.dataIndex][key]} voix (${ctx.raw}%)`
+          }
+        }
+      },
+      scales:{
+        x:{ ticks:{ font:{size:10}, autoSkip:false, maxRotation:50 } },
+        y:{ suggestedMax: data.reduce((a,b)=>Math.max(a,b),0)+6, ticks:{font:{size:11}}, title:{display:true,text:'%',font:{size:11}} }
+      }
+    }
+  };
+  if(singleChart) singleChart.destroy();
+  singleChart = new Chart(document.getElementById('singleBar'), cfg);
+}
+buildSingleBar('dutin');
+
+function switchBV(key, btn) {
+  document.querySelectorAll('#tabs-bv .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  buildSingleBar(key);
+}
+
+// ── Écart Dutin–Dayot ────────────────────────────────────────────────────
+const ecarts = bvs.map(b => b.dutin - b.dayot);
+new Chart(document.getElementById('ecartChart'), {
+  type: 'bar',
+  data: {
+    labels: bvShort,
+    datasets:[{
+      data: ecarts,
+      backgroundColor: ecarts.map(v => v >= 0 ? COLORS.dutin : COLORS.dayot),
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      datalabels:{
+        anchor: ctx => ctx.dataset.data[ctx.dataIndex] >= 0 ? 'end' : 'start',
+        align:  ctx => ctx.dataset.data[ctx.dataIndex] >= 0 ? 'top' : 'bottom',
+        color:  ctx => ctx.dataset.data[ctx.dataIndex] >= 0 ? COLORS.dutin : COLORS.dayot,
+        font:{ weight:'700', size:11 },
+        formatter: v => (v>0?'+':'')+v
+      },
+      tooltip:{callbacks:{label: ctx => ` Écart Dutin−Dayot : ${ctx.raw>0?'+':''}${ctx.raw} voix`}}
+    },
+    scales:{
+      x:{ ticks:{font:{size:10},autoSkip:false,maxRotation:50} },
+      y:{ ticks:{font:{size:11}}, title:{display:true,text:'voix',font:{size:11}} }
+    }
+  }
+});
+
+// ── Carte BV ─────────────────────────────────────────────────────────────
+function hexAlpha(hex, a) {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), bv=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${bv},${a.toFixed(2)})`;
+}
+let currentView = 'winner';
+function showView(v, btn) {
+  currentView = v;
+  if(btn) {
+    document.querySelectorAll('#tabs-map .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderMap();
+}
+function renderMap() {
+  const map = document.getElementById('bv-map');
+  map.innerHTML = '';
+  bvs.forEach(b => {
+    const cell = document.createElement('div');
+    cell.className = 'bv-cell';
+    let bg, fg = '#fff', content;
+    if(currentView === 'winner') {
+      const w = getWinner(b);
+      const p = (100*b[w]/b.exprimes).toFixed(1);
+      bg = COLORS[w];
+      content = `<span class="bv-num">BV${b.bv}</span><span class="bv-name">${b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Md').replace('Police Municipale','Police').replace('Lamarque Cando','Lamarque')}</span><span class="bv-cand">${NAMES[w]}</span><span class="bv-pct">${p}%</span>`;
+    } else if(currentView === 'participation') {
+      const p = (100*b.votants/b.inscrits);
+      const alpha = 0.2 + 0.7*(p/70);
+      bg = hexAlpha('#4a6fa5', Math.min(alpha,0.95));
+      fg = p > 45 ? '#fff' : '#1a3e72';
+      content = `<span class="bv-num">BV${b.bv}</span><span class="bv-name">${b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Md').replace('Police Municipale','Police').replace('Lamarque Cando','Lamarque')}</span><span class="bv-pct">${p.toFixed(1)}%</span>`;
+    } else {
+      const p = (100*b[currentView]/b.exprimes);
+      const alpha = 0.15 + 0.75*(p/45);
+      bg = hexAlpha(COLORS[currentView], Math.min(alpha,0.92));
+      fg = p > 28 ? '#fff' : COLORS[currentView];
+      content = `<span class="bv-num">BV${b.bv}</span><span class="bv-name">${b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Md').replace('Police Municipale','Police').replace('Lamarque Cando','Lamarque')}</span><span class="bv-pct">${p.toFixed(1)}%</span>`;
+    }
+    cell.style.cssText = `background:${bg};color:${fg};`;
+    cell.innerHTML = content;
+    map.appendChild(cell);
+  });
+}
+renderMap();
+
+// ── Tableau détaillé ──────────────────────────────────────────────────────
+function buildTable() {
+  const t = document.getElementById('detail-table');
+  t.innerHTML = `<thead><tr>
+    <th>Bureau</th>
+    <th>Inscrits</th><th>Votants</th><th>Part.</th><th>Exprimés</th>
+    <th style="color:var(--legodou)">Legodou</th>
+    <th style="color:var(--darrieussecq)">Darrieussecq</th>
+    <th style="color:var(--dutin)">Dutin</th>
+    <th style="color:var(--dayot)">Dayot</th>
+    <th style="color:var(--leregle)">Lerègle</th>
+    <th>1er</th>
+  </tr></thead>`;
+  const tbody = document.createElement('tbody');
+  bvs.forEach(b => {
+    const w = getWinner(b);
+    const tr = document.createElement('tr');
+    if(w === 'dutin') tr.className = 'td-1st';
+    tr.innerHTML = `
+      <td>${b.bv} – ${b.nom}</td>
+      <td>${b.inscrits}</td>
+      <td>${b.votants}</td>
+      <td>${pct1(b.votants,b.inscrits)}%</td>
+      <td>${b.exprimes}</td>
+      <td class="cell-leg">${b.legodou} <span style="font-weight:400;font-size:10px;opacity:.7">(${pct1(b.legodou,b.exprimes)}%)</span></td>
+      <td class="cell-darr">${b.darrieussecq} <span style="font-weight:400;font-size:10px;opacity:.7">(${pct1(b.darrieussecq,b.exprimes)}%)</span></td>
+      <td class="cell-dutin">${b.dutin} <span style="font-weight:400;font-size:10px;opacity:.7">(${pct1(b.dutin,b.exprimes)}%)</span></td>
+      <td class="cell-dayot">${b.dayot} <span style="font-weight:400;font-size:10px;opacity:.7">(${pct1(b.dayot,b.exprimes)}%)</span></td>
+      <td class="cell-ler">${b.leregle} <span style="font-weight:400;font-size:10px;opacity:.7">(${pct1(b.leregle,b.exprimes)}%)</span></td>
+      <td style="color:${COLORS[w]};font-weight:700">${NAMES[w]}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  // Total row
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>TOTAL</td>
+    <td>${totIns.toLocaleString('fr-FR')}</td>
+    <td>${totVot.toLocaleString('fr-FR')}</td>
+    <td>${pct1(totVot,totIns)}%</td>
+    <td>${totExp.toLocaleString('fr-FR')}</td>
+    <td class="cell-leg">${totals.legodou} (${pct(totals.legodou,totExp)}%)</td>
+    <td class="cell-darr">${totals.darrieussecq} (${pct(totals.darrieussecq,totExp)}%)</td>
+    <td class="cell-dutin">${totals.dutin} (${pct(totals.dutin,totExp)}%)</td>
+    <td class="cell-dayot">${totals.dayot} (${pct(totals.dayot,totExp)}%)</td>
+    <td class="cell-ler">${totals.leregle} (${pct(totals.leregle,totExp)}%)</td>
+    <td>—</td>
+  `;
+  tbody.appendChild(tr);
+  t.appendChild(tbody);
+}
+buildTable();
+</script>
+</body>
+</html>
