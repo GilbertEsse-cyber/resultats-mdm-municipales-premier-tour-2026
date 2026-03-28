@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Figtree', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    color: #1a1a1a;
+    background: #fff;
+    padding: 0;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4;
+    margin: 22mm 20mm 22mm 20mm;
+    @bottom-center {
+      content: "Mont-de-Marsan · Municipales 2026 · Analyse électorale — JB Savary · Mars 2026";
+      font-size: 7.5pt;
+      color: #999;
+    }
+    @top-right {
+      content: counter(page) " / " counter(pages);
+      font-size: 7.5pt;
+      color: #999;
+    }
+  }
+
+  /* Cover / title block */
+  .cover {
+    border-left: 5px solid #d4477a;
+    padding: 14px 20px;
+    margin-bottom: 32px;
+    background: #fdf6f9;
+  }
+  .cover h1 {
+    font-size: 18pt;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+  .cover .subtitle {
+    font-size: 11pt;
+    color: #555;
+    font-weight: 500;
+  }
+  .cover .meta {
+    font-size: 8.5pt;
+    color: #999;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  /* Section headings */
+  h2 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #d4477a;
+    margin-top: 28px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1.5px solid #f0d0db;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-top: 16px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    margin-bottom: 9px;
+  }
+
+  ul, ol {
+    margin: 6px 0 9px 20px;
+  }
+  li {
+    margin-bottom: 4px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin: 12px 0 16px;
+  }
+  thead tr {
+    background: #1a1a1a;
+    color: #fff;
+  }
+  th {
+    padding: 6px 9px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 8.5pt;
+    letter-spacing: 0.02em;
+  }
+  th.r { text-align: right; }
+  td {
+    padding: 5px 9px;
+    border-bottom: 1px solid #ebebeb;
+    vertical-align: middle;
+  }
+  td.r { text-align: right; }
+  tr:nth-child(even) td { background: #fafafa; }
+  tr.total td { font-weight: 700; background: #f3f3f3 !important; border-top: 1.5px solid #ccc; }
+
+  /* Candidate colours inline */
+  .c-dutin       { color: #d4477a; font-weight: 700; }
+  .c-dayot       { color: #1a3e72; font-weight: 700; }
+  .c-darr        { color: #e07020; font-weight: 700; }
+  .c-ler         { color: #888;    font-weight: 700; }
+  .c-leg         { color: #7c3fa0; font-weight: 700; }
+
+  /* Callout box */
+  .callout {
+    border-left: 4px solid #d4477a;
+    background: #fdf6f9;
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 10pt;
+  }
+  .callout strong { color: #d4477a; }
+
+  /* Estimation range tag */
+  .est {
+    display: inline-block;
+    background: #f0f0f0;
+    color: #555;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.5pt;
+  }
+
+  /* Synthesis table with colored left border */
+  .synth-table td.factor { width: 65%; }
+  .synth-table td.votes  { width: 35%; text-align: right; font-weight: 600; color: #d4477a; }
+
+  footer {
+    margin-top: 36px;
+    padding-top: 12px;
+    border-top: 1px solid #ddd;
+    font-size: 8pt;
+    color: #999;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>Analyse du report de voix et du comportement électoral</h1>
+  <div class="subtitle">Élections municipales · Mont-de-Marsan · 15 &amp; 29 mars 2026</div>
+  <div class="meta">
+    Note préparée par JB Savary · Mars 2026 · Données source : Ministère de l'Intérieur / CD40
+  </div>
+</div>
+
+
+<h2>1. Résultats comparés : vue d'ensemble</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Candidat / liste</th>
+      <th class="r">1er tour</th>
+      <th class="r">%</th>
+      <th class="r">2e tour</th>
+      <th class="r">%</th>
+      <th class="r">Évolution (voix)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="c-dutin">Dutin — Union de la Gauche (UG)</span></td>
+      <td class="r">3 531</td>
+      <td class="r">29,6 %</td>
+      <td class="r"><strong>4 718</strong></td>
+      <td class="r"><strong>37,96 %</strong></td>
+      <td class="r c-dutin">+1 187</td>
+    </tr>
+    <tr>
+      <td><span class="c-dayot">Dayot — Divers Droite (DVD)</span></td>
+      <td class="r">3 094</td>
+      <td class="r">26,0 %</td>
+      <td class="r">4 022</td>
+      <td class="r">32,36 %</td>
+      <td class="r c-dayot">+928</td>
+    </tr>
+    <tr>
+      <td><span class="c-darr">Darrieussecq — Divers Centre (DVC)</span></td>
+      <td class="r">2 849</td>
+      <td class="r">23,9 %</td>
+      <td class="r">2 461</td>
+      <td class="r">19,80 %</td>
+      <td class="r c-darr">−388</td>
+    </tr>
+    <tr>
+      <td><span class="c-ler">Lerègle — Rassemblement National (RN)</span></td>
+      <td class="r">1 654</td>
+      <td class="r">13,9 %</td>
+      <td class="r">1 228</td>
+      <td class="r">9,88 %</td>
+      <td class="r c-ler">−426</td>
+    </tr>
+    <tr>
+      <td><span class="c-leg">Legodou — Marsan Citoyen (MC)</span></td>
+      <td class="r">754</td>
+      <td class="r">6,3 %</td>
+      <td class="r">—</td>
+      <td class="r">absent</td>
+      <td class="r">redistribué</td>
+    </tr>
+    <tr class="total">
+      <td>Exprimés / Participation</td>
+      <td class="r">~11 917</td>
+      <td class="r">~57,3 %</td>
+      <td class="r">12 429</td>
+      <td class="r">61,1 %</td>
+      <td class="r">+512 exprimés</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Résultat : Frédéric Dutin (UG) est élu maire de Mont-de-Marsan</strong> avec 4 718 voix, soit 37,96 % des exprimés, devançant Charles Dayot de <strong>696 voix</strong> (contre +437 au premier tour). La gauche remporte 18 bureaux sur 23.
+</div>
+
+
+<h2>2. Le report Legodou : moteur principal de la victoire</h2>
+
+<p>Nicolas Legodou (Marsan Citoyen, 754 voix au T1) n'était pas présent au second tour, ne remplissant pas le seuil requis (12,5 % des inscrits, soit &gt; 2 500 voix). Son électorat, composé en majorité de sympathisants de gauche civique et de militants associatifs, a naturellement rejoint l'Union de la Gauche.</p>
+
+<p>En estimant que <strong>70 à 80 % de ses électeurs se sont reportés sur Dutin</strong>, ce transfert génère entre 530 et 600 voix nettes supplémentaires — soit la moitié de l'avance finale de Dutin sur Dayot. Ce report est l'acte fondateur de la victoire : sans lui, Dayot aurait vraisemblablement dépassé Dutin.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Destination estimée des voix Legodou (754 au T1)</th>
+      <th class="r">Fourchette</th>
+      <th class="r">Part</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>→ <span class="c-dutin">Dutin (UG)</span> — affinité gauche/civique naturelle</td>
+      <td class="r">530 – 600 voix</td>
+      <td class="r">70 – 80 %</td>
+    </tr>
+    <tr>
+      <td>→ <span class="c-dayot">Dayot (DVD)</span> — électeurs de centre modéré</td>
+      <td class="r">80 – 150 voix</td>
+      <td class="r">10 – 20 %</td>
+    </tr>
+    <tr>
+      <td>→ Abstention / blanc</td>
+      <td class="r">30 – 60 voix</td>
+      <td class="r">4 – 8 %</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h2>3. La décomposition de l'électorat Darrieussecq</h2>
+
+<p>Le paradoxe Darrieussecq : toujours candidate au second tour, elle perd néanmoins <strong>388 voix</strong> en valeur absolue. Ce recul s'explique par des fuites dans deux directions opposées :</p>
+
+<ul>
+  <li><strong>Vers Dayot (DVD)</strong> — une fraction de l'électorat DVC sensible à la droite modérée préfère voter utile contre la gauche. Cette proximité idéologique DVD/DVC est classique dans les élections locales. <span class="est">~200 – 250 voix</span></li>
+  <li><strong>Vers Dutin (UG)</strong> — une autre fraction, plus attachée aux enjeux locaux ou sensible au « vote barrage », choisit la gauche plutôt que de se retrouver isolée derrière un candidat en perte de vitesse. <span class="est">~100 – 150 voix</span></li>
+  <li><strong>Abstention</strong> — des électeurs Darrieussecq préfèrent ne pas choisir entre ces deux candidats. <span class="est">~50 – 100 voix</span></li>
+</ul>
+
+<p>Le secteur Péglé (BV14, 15) est le révélateur de ce glissement : Darrieussecq y était forte au T1 (115–131 voix, ~23 %) et c'est précisément là que Dayot prend la tête au T2. Le report DVC → DVD est géographiquement concentré dans ces bureaux résidentiels du centre-ouest.</p>
+
+
+<h2>4. Le comportement des électeurs Lerègle (RN)</h2>
+
+<p>Le Rassemblement National chute de ~1 654 à 1 228 voix, soit <strong>−426 voix</strong> (-25,8 %). Ce recul massif entre les deux tours est un phénomène caractéristique du RN dans les scrutins locaux où aucune dynamique de "vote barrage" national ne joue. Trois comportements se combinent :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Comportement des électeurs RN T1</th>
+      <th class="r">Estimation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Abstention — refus de choisir entre UG et DVD</td>
+      <td class="r">250 – 300 voix</td>
+    </tr>
+    <tr>
+      <td>Report vers <span class="c-dayot">Dayot (DVD)</span> — réflexe anti-gauche</td>
+      <td class="r">100 – 150 voix</td>
+    </tr>
+    <tr>
+      <td>Report (résiduel) vers <span class="c-dutin">Dutin</span> — électorat populaire social</td>
+      <td class="r">30 – 50 voix</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Fait notable : <strong>l'abstention RN profite indirectement à Dutin</strong>. Ces voix manquantes dans le camp Dayot creusent mécaniquement l'écart final. Si tous les électeurs Lerègle du T1 s'étaient reportés sur Dayot, l'écart final se serait réduit à moins de 200 voix.</p>
+
+
+<h2>5. La mobilisation différentielle : l'avantage structurel de la gauche</h2>
+
+<p><strong>+524 votants supplémentaires au second tour</strong> — phénomène contre-intuitif, les seconds tours locaux enregistrant ordinairement une baisse de participation. Cette mobilisation est asymétriquement favorable à l'Union de la Gauche.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Bureau</th>
+      <th class="r">Participation T1</th>
+      <th class="r">Participation T2</th>
+      <th class="r">Écart Dutin–Dayot T1</th>
+      <th class="r">Écart Dutin–Dayot T2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Arènes I (BV1)</td><td class="r">61,8 %</td><td class="r">62,8 %</td><td class="r c-dutin">+50</td><td class="r c-dutin">+71</td></tr>
+    <tr><td>Jean Moulin I (BV5)</td><td class="r">64,8 %</td><td class="r">64,2 %</td><td class="r c-dutin">+38</td><td class="r c-dutin">+64</td></tr>
+    <tr><td>Jean Moulin II (BV6)</td><td class="r">65,8 %</td><td class="r">70,7 %</td><td class="r c-dutin">+55</td><td class="r c-dutin">+57</td></tr>
+    <tr><td>Bourg Neuf I (BV20)</td><td class="r">58,6 %</td><td class="r">63,3 %</td><td class="r c-dutin">+36</td><td class="r c-dutin">+53</td></tr>
+    <tr><td>Péglé II (BV15)</td><td class="r">63,5 %</td><td class="r">67,0 %</td><td class="r c-dayot">−30</td><td class="r c-dayot">−28</td></tr>
+    <tr><td>Péglé III (BV16)</td><td class="r">58,7 %</td><td class="r">59,0 %</td><td class="r c-dutin">+10</td><td class="r c-dayot">−8</td></tr>
+    <tr><td>Jean Moulin V (BV9)</td><td class="r">65,6 %</td><td class="r">68,1 %</td><td class="r c-dayot">−16</td><td class="r c-dayot">−11</td></tr>
+  </tbody>
+</table>
+
+<p>Dans les quartiers populaires (Jean Moulin, Pouy, Arènes, Bourg Neuf), la progression de Dutin est forte et la participation se maintient ou progresse. Dans les secteurs plus résidentiels (Péglé), Dayot tient mieux mais ne creuse pas davantage.</p>
+
+
+<h2>6. La géographie des résistances : les 5 bureaux remportés par Dayot</h2>
+
+<p>Dayot remporte <strong>5 bureaux</strong> au second tour (contre 6 au premier), tous localisés dans les secteurs résidentiels du centre-ouest et du secteur Péglé :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Bureau</th>
+      <th class="r">Dutin T2</th>
+      <th class="r">Dayot T2</th>
+      <th class="r">Écart</th>
+      <th class="r">Profil</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Jean Moulin V (BV9)</td><td class="r">201</td><td class="r">212</td><td class="r c-dayot">−11</td><td class="r">Centre mixte</td></tr>
+    <tr><td>Péglé I (BV14)</td><td class="r">184</td><td class="r">194</td><td class="r c-dayot">−10</td><td class="r">Résidentiel</td></tr>
+    <tr><td>Péglé II (BV15)</td><td class="r">180</td><td class="r">208</td><td class="r c-dayot">−28</td><td class="r">Résidentiel aisé</td></tr>
+    <tr><td>Péglé III (BV16)</td><td class="r">204</td><td class="r">212</td><td class="r c-dayot">−8</td><td class="r">Résidentiel</td></tr>
+    <tr><td>Carboué II (BV23)</td><td class="r">180</td><td class="r">186</td><td class="r c-dayot">−6</td><td class="r">Péri-urbain</td></tr>
+  </tbody>
+</table>
+
+<p>La résistance de Dayot dans ces zones est réelle mais les marges restent faibles (−6 à −28 voix), sans commune mesure avec les excédents de Dutin dans les bastions populaires où il s'impose parfois de 50 à 75 voix.</p>
+
+
+<h2>7. Synthèse : les facteurs de la victoire Dutin</h2>
+
+<table class="synth-table">
+  <thead>
+    <tr>
+      <th>Facteur déterminant</th>
+      <th class="r">Contribution estimée</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Report quasi-total de l'électorat Legodou (MC → UG)</td>
+      <td class="r c-dutin">+530 à +600 voix</td>
+    </tr>
+    <tr>
+      <td>Mobilisation supérieure dans les quartiers populaires au T2</td>
+      <td class="r c-dutin">+250 à +350 voix nettes</td>
+    </tr>
+    <tr>
+      <td>Fuites partielles de l'électorat Darrieussecq vers Dutin</td>
+      <td class="r c-dutin">+100 à +150 voix</td>
+    </tr>
+    <tr>
+      <td>Abstention massive des électeurs RN (non-report sur Dayot)</td>
+      <td class="r c-dutin">avantage induit ~250–300 voix</td>
+    </tr>
+    <tr>
+      <td>Base solide dès le T1 : 1er sur 17 bureaux / 23</td>
+      <td class="r c-dutin">socle de départ +437</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  La victoire de Frédéric Dutin est une <strong>victoire de rassemblement à gauche</strong> : la jonction UG + Marsan Citoyen a constitué un bloc de gauche solidaire et suffisamment large pour résister au tête-à-tête avec la droite. Ni le rapprochement tacite DVD/DVC, ni le report partiel du RN vers Dayot, n'ont suffi à inverser la dynamique. La clé réside dans trois phénomènes conjugués : le <strong>report discipliné de l'électorat Legodou</strong>, une <strong>mobilisation sélective favori­sant la gauche</strong> dans les quartiers populaires, et une <strong>décomposition du centre-droit</strong> (Darrieussecq) qui n'a pas produit de consolidation suffisante derrière Dayot.
+</div>
+
+<footer>
+  Mont-de-Marsan · Élections municipales 2026 · Note d'analyse électorale — JB Savary · Mars 2026 ·
+  Données : Ministère de l'Intérieur / CD40
+</footer>
+
+</body>
+</html>

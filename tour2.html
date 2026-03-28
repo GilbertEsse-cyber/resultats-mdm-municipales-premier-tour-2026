@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mont-de-Marsan — Municipales 2026 — 1er tour</title>
+<title>Mont-de-Marsan — Municipales 2026 — 2e tour</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <style>
@@ -15,7 +15,6 @@
     --leregle:     #888888;
     --dayot:       #1a3e72;
     --darrieussecq:#e07020;
-    --legodou:     #7c3fa0;
     --dutin:       #d4477a;
     --bg:          #f5f4f0;
     --surface:     #ffffff;
@@ -33,6 +32,26 @@
     max-width: 1280px;
     margin: 0 auto;
   }
+
+  /* Round navigation */
+  .rounds-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .round-link {
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    text-decoration: none;
+    color: var(--muted);
+    background: transparent;
+    transition: all .15s;
+  }
+  .round-link:hover { background: var(--bg); color: var(--text); }
+  .round-link.active { background: var(--text); color: #fff; border-color: transparent; }
 
   header {
     margin-bottom: 28px;
@@ -125,11 +144,9 @@
   .tab.active.t-leregle     { background: var(--leregle); }
   .tab.active.t-dayot        { background: var(--dayot); }
   .tab.active.t-darrieussecq { background: var(--darrieussecq); }
-  .tab.active.t-legodou      { background: var(--legodou); }
   .tab.active.t-dutin        { background: var(--dutin); }
   .tab.active.t-winner       { background: #333; }
   .tab.active.t-participation { background: #4a6fa5; }
-  .tab.active.t-ecart        { background: #2d6e4e; }
 
   /* BV grid map */
   #bv-map { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
@@ -166,51 +183,29 @@
   .cell-dutin { color: var(--dutin); font-weight: 700; }
   .cell-dayot { color: var(--dayot); font-weight: 700; }
   .cell-darr  { color: var(--darrieussecq); font-weight: 700; }
-  .cell-leg   { color: var(--legodou); font-weight: 700; }
   .cell-ler   { color: var(--leregle); font-weight: 700; }
   .td-1st { background: rgba(212,71,122,0.08) !important; }
   .td-win  { font-weight: 700 !important; }
 
   footer { font-size: 11px; color: var(--muted); text-align: center; margin-top: 32px; }
-
-  /* Round navigation */
-  .rounds-nav {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 20px;
-  }
-  .round-link {
-    padding: 7px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    border-radius: 20px;
-    border: 1.5px solid var(--border);
-    text-decoration: none;
-    color: var(--muted);
-    background: transparent;
-    transition: all .15s;
-  }
-  .round-link:hover { background: var(--bg); color: var(--text); }
-  .round-link.active { background: var(--text); color: #fff; border-color: transparent; }
 </style>
 </head>
 <body>
 
 <nav class="rounds-nav">
-  <a href="index.html" class="round-link active">1<sup>er</sup> tour · 15 mars</a>
-  <a href="tour2.html" class="round-link">2<sup>e</sup> tour · 29 mars</a>
+  <a href="index.html" class="round-link">1<sup>er</sup> tour · 15 mars</a>
+  <a href="tour2.html" class="round-link active">2<sup>e</sup> tour · 29 mars</a>
 </nav>
 
 <header>
-  <h1>Mont-de-Marsan · Municipales 2026 · 1<sup>er</sup> tour</h1>
-  <span>15 mars 2026 · 23 bureaux de vote actifs</span>
+  <h1>Mont-de-Marsan · Municipales 2026 · 2<sup>e</sup> tour</h1>
+  <span>29 mars 2026 · 23 bureaux de vote actifs</span>
 </header>
 
 <div class="legend">
   <span class="legend-item"><span class="legend-sq" style="background:var(--leregle)"></span>Lerègle (RN)</span>
-  <span class="legend-item"><span class="legend-sq" style="background:var(--dayot)"></span>Dayot</span>
-  <span class="legend-item"><span class="legend-sq" style="background:var(--darrieussecq)"></span>Darrieussecq</span>
-  <span class="legend-item"><span class="legend-sq" style="background:var(--legodou)"></span>Legodou (Marsan Citoyen)</span>
+  <span class="legend-item"><span class="legend-sq" style="background:var(--dayot)"></span>Dayot (DVD)</span>
+  <span class="legend-item"><span class="legend-sq" style="background:var(--darrieussecq)"></span>Darrieussecq (DVC)</span>
   <span class="legend-item"><span class="legend-sq" style="background:var(--dutin)"></span>Dutin (Union de la Gauche)</span>
 </div>
 
@@ -243,7 +238,6 @@
     <button class="tab t-dayot"               onclick="switchBV('dayot',this)">Dayot</button>
     <button class="tab t-darrieussecq"        onclick="switchBV('darrieussecq',this)">Darrieussecq</button>
     <button class="tab t-leregle"             onclick="switchBV('leregle',this)">Lerègle</button>
-    <button class="tab t-legodou"             onclick="switchBV('legodou',this)">Legodou</button>
   </div>
   <div style="position:relative;width:100%;height:300px"><canvas id="singleBar"></canvas></div>
 </div>
@@ -284,46 +278,44 @@ const COLORS = {
   leregle:      '#888888',
   dayot:        '#1a3e72',
   darrieussecq: '#e07020',
-  legodou:      '#7c3fa0',
   dutin:        '#d4477a'
 };
 const NAMES = {
-  leregle:'Lerègle', dayot:'Dayot', darrieussecq:'Darrieussecq', legodou:'Legodou', dutin:'Dutin'
+  leregle:'Lerègle', dayot:'Dayot', darrieussecq:'Darrieussecq', dutin:'Dutin'
 };
-const KEYS = ['leregle','legodou','darrieussecq','dutin','dayot'];
+const KEYS = ['leregle','darrieussecq','dayot','dutin'];
 
 const bvs = [
-  {bv:1,  nom:'Arènes I',           inscrits:881,  votants:548, exprimes:540, leregle:65,  legodou:27, darrieussecq:159, dutin:163, dayot:113},
-  {bv:2,  nom:'Pouy I',             inscrits:1030, votants:525, exprimes:511, leregle:68,  legodou:41, darrieussecq:115, dutin:172, dayot:115},
-  {bv:3,  nom:'Pouy II',            inscrits:827,  votants:539, exprimes:524, leregle:57,  legodou:32, darrieussecq:129, dutin:149, dayot:157},
-  {bv:4,  nom:'Pouy III',           inscrits:880,  votants:532, exprimes:524, leregle:74,  legodou:31, darrieussecq:130, dutin:170, dayot:119},
-  {bv:5,  nom:'Jean Moulin I',      inscrits:853,  votants:553, exprimes:536, leregle:63,  legodou:39, darrieussecq:105, dutin:183, dayot:145},
-  {bv:6,  nom:'Jean Moulin II',     inscrits:875,  votants:576, exprimes:564, leregle:76,  legodou:40, darrieussecq:123, dutin:190, dayot:135},
-  {bv:7,  nom:'Jean Moulin III',    inscrits:877,  votants:524, exprimes:510, leregle:75,  legodou:29, darrieussecq:118, dutin:171, dayot:117},
-  {bv:8,  nom:'Jean Moulin IV',     inscrits:964,  votants:656, exprimes:633, leregle:79,  legodou:42, darrieussecq:161, dutin:194, dayot:157},
-  {bv:9,  nom:'Jean Moulin V',      inscrits:916,  votants:601, exprimes:593, leregle:89,  legodou:24, darrieussecq:158, dutin:153, dayot:169},
-  {bv:10, nom:'Police Municipale',  inscrits:799,  votants:456, exprimes:441, leregle:49,  legodou:28, darrieussecq:115, dutin:132, dayot:117},
-  {bv:11, nom:'Lamarque Cando',     inscrits:1060, votants:564, exprimes:558, leregle:74,  legodou:50, darrieussecq:161, dutin:138, dayot:135},
-  {bv:12, nom:'Saint-Médard I',     inscrits:793,  votants:525, exprimes:514, leregle:98,  legodou:34, darrieussecq:113, dutin:145, dayot:124},
-  {bv:13, nom:'Saint-Médard II',    inscrits:897,  votants:565, exprimes:546, leregle:75,  legodou:22, darrieussecq:133, dutin:149, dayot:167},
-  {bv:14, nom:'Péglé I',            inscrits:820,  votants:503, exprimes:499, leregle:59,  legodou:30, darrieussecq:111, dutin:140, dayot:152},
-  {bv:15, nom:'Péglé II',           inscrits:805,  votants:511, exprimes:500, leregle:41,  legodou:32, darrieussecq:131, dutin:133, dayot:163},
-  {bv:16, nom:'Péglé III',          inscrits:991,  votants:582, exprimes:564, leregle:70,  legodou:51, darrieussecq:137, dutin:158, dayot:148},
-  {bv:17, nom:'Péglé IV',           inscrits:858,  votants:498, exprimes:487, leregle:64,  legodou:47, darrieussecq:119, dutin:148, dayot:103},
-  {bv:18, nom:'Argenté I',          inscrits:1041, votants:404, exprimes:396, leregle:47,  legodou:14, darrieussecq:58,  dutin:136, dayot:133},
-  {bv:19, nom:'Argenté II',         inscrits:927,  votants:444, exprimes:432, leregle:82,  legodou:30, darrieussecq:88,  dutin:124, dayot:108},
-  {bv:20, nom:'Bourg Neuf I',       inscrits:1040, votants:609, exprimes:590, leregle:61,  legodou:45, darrieussecq:162, dutin:179, dayot:143},
-  {bv:21, nom:'Bourg Neuf II',      inscrits:895,  votants:499, exprimes:492, leregle:98,  legodou:25, darrieussecq:114, dutin:135, dayot:120},
-  {bv:22, nom:'Carboue I',          inscrits:827,  votants:458, exprimes:446, leregle:96,  legodou:26, darrieussecq:106, dutin:117, dayot:101},
-  {bv:23, nom:'Carboue II',         inscrits:891,  votants:527, exprimes:517, leregle:94,  legodou:15, darrieussecq:103, dutin:152, dayot:153},
+  {bv:1,  nom:'Arènes I',           inscrits:886,  votants:556, blancs:9,  exprimes:538, leregle:42,  darrieussecq:127, dayot:149, dutin:220},
+  {bv:2,  nom:'Pouy I',             inscrits:1030, votants:544, blancs:9,  exprimes:532, leregle:52,  darrieussecq:102, dayot:153, dutin:225},
+  {bv:3,  nom:'Pouy II',            inscrits:828,  votants:542, blancs:4,  exprimes:531, leregle:40,  darrieussecq:107, dayot:187, dutin:197},
+  {bv:4,  nom:'Pouy III',           inscrits:881,  votants:572, blancs:4,  exprimes:556, leregle:69,  darrieussecq:114, dayot:150, dutin:223},
+  {bv:5,  nom:'Jean Moulin I',      inscrits:853,  votants:548, blancs:5,  exprimes:536, leregle:48,  darrieussecq:94,  dayot:165, dutin:229},
+  {bv:6,  nom:'Jean Moulin II',     inscrits:875,  votants:619, blancs:8,  exprimes:606, leregle:60,  darrieussecq:121, dayot:184, dutin:241},
+  {bv:7,  nom:'Jean Moulin III',    inscrits:877,  votants:539, blancs:7,  exprimes:526, leregle:67,  darrieussecq:105, dayot:140, dutin:214},
+  {bv:8,  nom:'Jean Moulin IV',     inscrits:964,  votants:665, blancs:11, exprimes:647, leregle:58,  darrieussecq:154, dayot:203, dutin:232},
+  {bv:9,  nom:'Jean Moulin V',      inscrits:916,  votants:624, blancs:6,  exprimes:615, leregle:63,  darrieussecq:139, dayot:212, dutin:201},
+  {bv:10, nom:'Mairie',             inscrits:799,  votants:480, blancs:8,  exprimes:467, leregle:39,  darrieussecq:88,  dayot:152, dutin:188},
+  {bv:11, nom:'Lamarque Cando',     inscrits:1060, votants:595, blancs:8,  exprimes:578, leregle:49,  darrieussecq:134, dayot:192, dutin:203},
+  {bv:12, nom:'Saint-Médard I',     inscrits:793,  votants:537, blancs:9,  exprimes:525, leregle:54,  darrieussecq:103, dayot:168, dutin:200},
+  {bv:13, nom:'Saint-Médard II',    inscrits:897,  votants:583, blancs:7,  exprimes:564, leregle:52,  darrieussecq:116, dayot:195, dutin:201},
+  {bv:14, nom:'Péglé I',            inscrits:820,  votants:528, blancs:7,  exprimes:515, leregle:36,  darrieussecq:101, dayot:194, dutin:184},
+  {bv:15, nom:'Péglé II',           inscrits:806,  votants:540, blancs:5,  exprimes:530, leregle:38,  darrieussecq:104, dayot:208, dutin:180},
+  {bv:16, nom:'Péglé III',          inscrits:993,  votants:586, blancs:13, exprimes:567, leregle:51,  darrieussecq:100, dayot:212, dutin:204},
+  {bv:17, nom:'Péglé IV',           inscrits:858,  votants:517, blancs:4,  exprimes:507, leregle:53,  darrieussecq:106, dayot:127, dutin:221},
+  {bv:18, nom:'Argenté I',          inscrits:1042, votants:508, blancs:3,  exprimes:501, leregle:36,  darrieussecq:66,  dayot:195, dutin:204},
+  {bv:19, nom:'Argenté II',         inscrits:928,  votants:469, blancs:6,  exprimes:456, leregle:61,  darrieussecq:79,  dayot:144, dutin:172},
+  {bv:20, nom:'Bourg Neuf I',       inscrits:1040, votants:658, blancs:3,  exprimes:648, leregle:45,  darrieussecq:144, dayot:203, dutin:256},
+  {bv:21, nom:'Bourg Neuf II',      inscrits:895,  votants:529, blancs:3,  exprimes:522, leregle:63,  darrieussecq:92,  dayot:175, dutin:192},
+  {bv:22, nom:'Carboué I',          inscrits:829,  votants:451, blancs:5,  exprimes:437, leregle:82,  darrieussecq:76,  dayot:128, dutin:151},
+  {bv:23, nom:'Carboué II',         inscrits:892,  votants:533, blancs:4,  exprimes:525, leregle:70,  darrieussecq:89,  dayot:186, dutin:180},
 ];
 
-// Note: j'utilise les voix du tableau image pour corriger quelques écarts
-// Totaux recalculés sur la base du tableau image (ligne total visible)
-const totIns  = bvs.reduce((s,b) => s + b.inscrits, 0);
-const totVot  = bvs.reduce((s,b) => s + b.votants,  0);
-const totExp  = bvs.reduce((s,b) => s + b.exprimes, 0);
-const totals  = {};
+const totIns   = bvs.reduce((s,b) => s + b.inscrits,  0);
+const totVot   = bvs.reduce((s,b) => s + b.votants,   0);
+const totBlancs= bvs.reduce((s,b) => s + b.blancs,    0);
+const totExp   = bvs.reduce((s,b) => s + b.exprimes,  0);
+const totals   = {};
 KEYS.forEach(k => totals[k] = bvs.reduce((s,b) => s + b[k], 0));
 
 function pct(v, base) { return (100*v/base).toFixed(2); }
@@ -336,13 +328,14 @@ function getWinner(b) {
 
 // ── Metrics ──────────────────────────────────────────────────────────────────
 const mdata = [
-  {label:'Inscrits',      val: totIns.toLocaleString('fr-FR'),   sub: '',                          cls:''},
-  {label:'Votants',       val: totVot.toLocaleString('fr-FR'),   sub: pct1(totVot,totIns)+'% de participation', cls:''},
-  {label:'Exprimés',      val: totExp.toLocaleString('fr-FR'),   sub: pct1(totExp,totVot)+'% des votants', cls:''},
-  {label:'Dutin — 1er',  val: totals.dutin.toLocaleString('fr-FR'), sub: pct(totals.dutin,totExp)+'% des exprimés', cls:'accent-dutin'},
-  {label:'Dayot — 2e',   val: totals.dayot.toLocaleString('fr-FR'), sub: pct(totals.dayot,totExp)+'% des exprimés', cls:'accent-dayot'},
+  {label:'Inscrits',      val: totIns.toLocaleString('fr-FR'),    sub: '',                                              cls:''},
+  {label:'Votants',       val: totVot.toLocaleString('fr-FR'),    sub: pct1(totVot,totIns)+'% de participation',        cls:''},
+  {label:'Blancs',        val: totBlancs.toLocaleString('fr-FR'), sub: pct1(totBlancs,totVot)+'% des votants',          cls:''},
+  {label:'Exprimés',      val: totExp.toLocaleString('fr-FR'),    sub: pct1(totExp,totVot)+'% des votants',             cls:''},
+  {label:'Dutin — 1er',  val: totals.dutin.toLocaleString('fr-FR'), sub: pct(totals.dutin,totExp)+'% des exprimés',   cls:'accent-dutin'},
+  {label:'Dayot — 2e',   val: totals.dayot.toLocaleString('fr-FR'), sub: pct(totals.dayot,totExp)+'% des exprimés',   cls:'accent-dayot'},
   {label:'Darrieussecq', val: totals.darrieussecq.toLocaleString('fr-FR'), sub: pct(totals.darrieussecq,totExp)+'% des exprimés', cls:'accent-darr'},
-  {label:'Écart D–D',    val: '+'+(totals.dutin-totals.dayot), sub: 'Dutin − Dayot en voix', cls:''},
+  {label:'Écart D–D',    val: '+'+(totals.dutin-totals.dayot),   sub: 'Dutin − Dayot en voix',                         cls:''},
 ];
 const mg = document.getElementById('metrics');
 mdata.forEach(m => {
@@ -353,16 +346,16 @@ mdata.forEach(m => {
   </div>`;
 });
 
-const bvShort = bvs.map(b => b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Méd').replace('Police Municipale','Police').replace('Lamarque Cando','Lamarque').replace('Bourg Neuf','Bourg N.').replace('Carboue','Carboué'));
+const bvShort = bvs.map(b => b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Méd').replace('Lamarque Cando','Lamarque').replace('Bourg Neuf','Bourg N.').replace('Carboué','Carboué'));
 
 // ── Camembert résultats ────────────────────────────────────────────────────
 new Chart(document.getElementById('pieChart'), {
   type: 'doughnut',
   data: {
-    labels: ['Lerègle','Legodou','Darrieussecq','Dutin','Dayot'],
+    labels: ['Lerègle','Darrieussecq','Dayot','Dutin'],
     datasets:[{
-      data: [totals.leregle, totals.legodou, totals.darrieussecq, totals.dutin, totals.dayot],
-      backgroundColor: [COLORS.leregle, COLORS.legodou, COLORS.darrieussecq, COLORS.dutin, COLORS.dayot],
+      data: [totals.leregle, totals.darrieussecq, totals.dayot, totals.dutin],
+      backgroundColor: [COLORS.leregle, COLORS.darrieussecq, COLORS.dayot, COLORS.dutin],
       borderWidth: 2,
       borderColor: '#fff'
     }]
@@ -375,7 +368,7 @@ new Chart(document.getElementById('pieChart'), {
       datalabels: {
         color: '#fff',
         font: { weight:'700', size:13 },
-        formatter: (val, ctx) => {
+        formatter: (val) => {
           const pctV = (100*val/totExp).toFixed(1);
           return pctV + '%';
         },
@@ -431,10 +424,9 @@ new Chart(document.getElementById('stackedBar'), {
     labels: bvShort,
     datasets: [
       { label:'Lerègle',      data: bvs.map(b=>b.leregle),      backgroundColor: COLORS.leregle },
-      { label:'Legodou',      data: bvs.map(b=>b.legodou),      backgroundColor: COLORS.legodou },
       { label:'Darrieussecq', data: bvs.map(b=>b.darrieussecq), backgroundColor: COLORS.darrieussecq },
-      { label:'Dutin',        data: bvs.map(b=>b.dutin),        backgroundColor: COLORS.dutin },
       { label:'Dayot',        data: bvs.map(b=>b.dayot),        backgroundColor: COLORS.dayot },
+      { label:'Dutin',        data: bvs.map(b=>b.dutin),        backgroundColor: COLORS.dutin },
     ]
   },
   options: {
@@ -564,19 +556,19 @@ function renderMap() {
       const w = getWinner(b);
       const p = (100*b[w]/b.exprimes).toFixed(1);
       bg = COLORS[w];
-      content = `<span class="bv-num">BV${b.bv}</span><span class="bv-name">${b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Md').replace('Police Municipale','Police').replace('Lamarque Cando','Lamarque')}</span><span class="bv-cand">${NAMES[w]}</span><span class="bv-pct">${p}%</span>`;
+      content = `<span class="bv-num">BV${b.bv}</span><span class="bv-name">${b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Md').replace('Lamarque Cando','Lamarque')}</span><span class="bv-cand">${NAMES[w]}</span><span class="bv-pct">${p}%</span>`;
     } else if(currentView === 'participation') {
       const p = (100*b.votants/b.inscrits);
       const alpha = 0.2 + 0.7*(p/70);
       bg = hexAlpha('#4a6fa5', Math.min(alpha,0.95));
       fg = p > 45 ? '#fff' : '#1a3e72';
-      content = `<span class="bv-num">BV${b.bv}</span><span class="bv-name">${b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Md').replace('Police Municipale','Police').replace('Lamarque Cando','Lamarque')}</span><span class="bv-pct">${p.toFixed(1)}%</span>`;
+      content = `<span class="bv-num">BV${b.bv}</span><span class="bv-name">${b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Md').replace('Lamarque Cando','Lamarque')}</span><span class="bv-pct">${p.toFixed(1)}%</span>`;
     } else {
       const p = (100*b[currentView]/b.exprimes);
       const alpha = 0.15 + 0.75*(p/45);
       bg = hexAlpha(COLORS[currentView], Math.min(alpha,0.92));
       fg = p > 28 ? '#fff' : COLORS[currentView];
-      content = `<span class="bv-num">BV${b.bv}</span><span class="bv-name">${b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Md').replace('Police Municipale','Police').replace('Lamarque Cando','Lamarque')}</span><span class="bv-pct">${p.toFixed(1)}%</span>`;
+      content = `<span class="bv-num">BV${b.bv}</span><span class="bv-name">${b.nom.replace('Jean Moulin','JM').replace('Saint-Médard','St-Md').replace('Lamarque Cando','Lamarque')}</span><span class="bv-pct">${p.toFixed(1)}%</span>`;
     }
     cell.style.cssText = `background:${bg};color:${fg};`;
     cell.innerHTML = content;
@@ -590,8 +582,7 @@ function buildTable() {
   const t = document.getElementById('detail-table');
   t.innerHTML = `<thead><tr>
     <th>Bureau</th>
-    <th>Inscrits</th><th>Votants</th><th>Part.</th><th>Exprimés</th>
-    <th style="color:var(--legodou)">Legodou</th>
+    <th>Inscrits</th><th>Votants</th><th>Part.</th><th>Blancs</th><th>Exprimés</th>
     <th style="color:var(--darrieussecq)">Darrieussecq</th>
     <th style="color:var(--dutin)">Dutin</th>
     <th style="color:var(--dayot)">Dayot</th>
@@ -608,8 +599,8 @@ function buildTable() {
       <td>${b.inscrits}</td>
       <td>${b.votants}</td>
       <td>${pct1(b.votants,b.inscrits)}%</td>
+      <td>${b.blancs}</td>
       <td>${b.exprimes}</td>
-      <td class="cell-leg">${b.legodou} <span style="font-weight:400;font-size:10px;opacity:.7">(${pct1(b.legodou,b.exprimes)}%)</span></td>
       <td class="cell-darr">${b.darrieussecq} <span style="font-weight:400;font-size:10px;opacity:.7">(${pct1(b.darrieussecq,b.exprimes)}%)</span></td>
       <td class="cell-dutin">${b.dutin} <span style="font-weight:400;font-size:10px;opacity:.7">(${pct1(b.dutin,b.exprimes)}%)</span></td>
       <td class="cell-dayot">${b.dayot} <span style="font-weight:400;font-size:10px;opacity:.7">(${pct1(b.dayot,b.exprimes)}%)</span></td>
@@ -625,8 +616,8 @@ function buildTable() {
     <td>${totIns.toLocaleString('fr-FR')}</td>
     <td>${totVot.toLocaleString('fr-FR')}</td>
     <td>${pct1(totVot,totIns)}%</td>
+    <td>${totBlancs}</td>
     <td>${totExp.toLocaleString('fr-FR')}</td>
-    <td class="cell-leg">${totals.legodou} (${pct(totals.legodou,totExp)}%)</td>
     <td class="cell-darr">${totals.darrieussecq} (${pct(totals.darrieussecq,totExp)}%)</td>
     <td class="cell-dutin">${totals.dutin} (${pct(totals.dutin,totExp)}%)</td>
     <td class="cell-dayot">${totals.dayot} (${pct(totals.dayot,totExp)}%)</td>
